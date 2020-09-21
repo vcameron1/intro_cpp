@@ -1,35 +1,117 @@
 ---
-title: "Untitled"
+title: "Introduction à C++"
 author: "Victor Cameron & Benjamin Mercier"
 date: "18/09/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Pourquoi C++?
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+La probabilité $X_i$ qu'une cellule $i$ soit occupée par une population est la somme de la probabilité de colonisation et de la probabilité qu'une population y demeure
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+$$P(X_{i,t+1} = 1) = c_i + (1 - e_i)$$
 
-```{r cars}
-summary(cars)
+où la probabilité de colonisation de $i$ est la somme des probabilités qu'un colonisateur arrive de $j$ et est fonction de la distance $D_{ij}$.
+
+$$c_i = \sum{X_j * f(D_{ij})}$$
+
+La distance entre la cellule $j$ et $i$ doit être calculé à chaque itération, parce que la matrice de distance serait trop volumineuse à garder en mémoire
+
+Problème! Le paysage contient 10^{5} cellules, donc chaque intération représente 10^{10} calculs de distance.
+
+### Comparons le temps nécessaire pour faire l'opération en R et en C++
+
+Fonction qui calcule la sommation des distances Euclédiennes pour les cellules de la matrice avec R
+
+```{r distances}
+distanceR <- function(width, height, x_vec, y_vec){
+
+  distance <- matrix(0, nc = width, nr = height)
+
+  # Cellule [y_i,x_i]
+  for(x_i in x_vec){
+    for(y_i in y_vec){
+
+      dist <- 0
+
+      # Cellule [y_j,x_j]
+      for(x_j in x_vec){
+        for(y_j in y_vec){
+          dist <- dist + sqrt((x_i - x_j)^2 + (y_i - y_j)^2)
+        }
+      }
+
+      distance[y_i,x_i] <- dist
+    }
+  }
+}
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Fonction qui calcule la sommation des distances Euclédiennes pour les cellules de la matrice avec C++
 
 ```{Rcpp}
+#include <string.h>
+#include <numeric>
+#include <math.h>
+#include <Rcpp.h>
+using namespace Rcpp;
+
+// [[Rcpp::export]]
+NumericMatrix distanceCpp(int width, int height, NumericVector x_vec, NumericVector y_vec) {
+
+    NumericMatrix distance(height, width);   // height x width matrix
+    float dist;
+
+    // Cellule [y_i,x_i]
+    for(int x_i=0; x_i<width; x_i++){ // En C++ le premier élément d un vecteur est à la position 0
+    for(int y_i=0; y_i<height; y_i++){ // C++ a obtenu son nom de la commande y++
+
+      dist = 0;  // somme des distances pour la cellule [y_i,x_i]
+
+      // Cellule [y_j,x_j]
+      for(int x_j=0; x_j<width; x_j++){
+        for(int y_j=0; y_j<height; y_j++){
+
+          dist += sqrt((x_i - x_j)^2 + (y_i - y_j)^2); // += est l équivalent de dist = dist + sum
+
+        }
+      }
+
+      distance(y_i,x_i) = dist;
+
+    }
+  }
+
+  return distance;
+
+}
 
 ```
 
+Comparons le temps nécessaire pour faire l'opération en R et en C++
+
+```{r}
+# Prenons une matrice de 100 x 10 cellules
+width <- 100
+height <- 10
+
+# Deux vecteurs décrivant la position en x et en y des cellules d'une matrice de 100x10 cellules
+x_vec <- c(1:width)
+y_vec <- c(1:height)
+
+# Temps requis pour compléter l'opération
+system.time({distanceR(width, height, x_vec, y_vec)})  # Avec R
+system.time({distanceCpp(width, height, x_vec, y_vec)}) # Avec C++
+```
+
+La rapidité d'implémentation du langage de programmation C++ est de beaucoup suppérieure à celle de R. Cependant, programmer en R est beaucoup plus convivial. Voyons pourquoi.
+
+***Allocation de la mémoire!***
+R mets beaucoup de temps en allocation de mémoire et crée de nombreux objets temporaires.
+C++ permet une implémentation plus rapide puisqu'il permet d'optimiser via la gestion de la mémoire et des 'patterns' d'accès.
