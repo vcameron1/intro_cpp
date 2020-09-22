@@ -230,7 +230,7 @@ main(){
 La condition est toujours testée en premier. Si la condition est fausse, le code à l'intérieur de la boucle n'est pas évaluée.
 
 Plusieurs controles peuvent être utilisés dans une boucle.
-```{Rcpp, eval = false}
+```{Rcpp, eval = FALSE}
 
 for(x=0, y=0; x<=10; ++x, --y)    // la vigure en c++ veut dire fait ça et ça
   cout << x << ' ' << y << '\n';
@@ -255,3 +255,78 @@ for(x=0, y=0; x<=10; ++x, --y)    // la vigure en c++ veut dire fait ça et ça
 C++ a obtenu son nom de l'opérateur d'incrément. C++ est bâti à partir du langage C, il représente un _incremental improvment_ par rapport à C
 
 ## Rcpp
+
+___Rcpp___ est un package qui étend R pour y inclure C++.
+Rcpp est un package CRAN et peut être intallé en utilisant 'install.packages('Rcpp')'.
+
+On peut vérifier que le package fonctionne normalement
+```{r c++}
+library("Rcpp") 
+evalCpp("2 + 2")
+```
+
+Une fonction C++ peut être codée directement dans un script R en utilisant _cppFunction()_.
+Voici une fonction qui retourne un T/F dépendemment de si l'entrée est impaire ou pas.
+```{r Rcpp isOdd}
+library("Rcpp")
+cppFunction("
+bool isOddCpp(int num = 10) {
+bool result = (num % 2 == 1);
+   return result;
+}")
+```
+
+Une fonction C++ peut être codée dans un script C++ en tenant compte de la syntaxe spécifique à _Rcpp_. Le script C++ n'a qu'à être référencé dans le code R, comme on le ferait pour un script R.
+```{r}
+Rcpp::sourceCpp(file="isOddCpp2.cpp")
+```
+
+
+```{r}
+isOddCpp(42)
+isOddCpp2(42)
+```
+
+
+### Classes d'objet spécifiques à Rcpp
+
+Rcpp crée des classe d'objets qui permet le lien. eg. NumericVector
+```{Rcpp, veal = FALSE}
+#include <string.h>
+#include <numeric>
+#include <math.h>
+#include <Rcpp.h>
+using namespace Rcpp;
+
+// [[Rcpp::export]]
+NumericMatrix distanceCpp(int width, int height, NumericVector x_vec, NumericVector y_vec) {
+
+    NumericMatrix distance(height, width);   // height x width matrix
+    float dist;
+
+    // Cellule [y_i,x_i]
+    for(int x_i=0; x_i<width; x_i++){ // En C++ le premier élément d un vecteur est à la position 0
+    for(int y_i=0; y_i<height; y_i++){ // C++ a obtenu son nom de la commande y++
+
+      dist = 0;  // somme des distances pour la cellule [y_i,x_i]
+
+      // Cellule [y_j,x_j]
+      for(int x_j=0; x_j<width; x_j++){
+        for(int y_j=0; y_j<height; y_j++){
+
+          dist += sqrt((x_i - x_j)^2 + (y_i - y_j)^2); // += est l équivalent de dist = dist + sum
+
+        }
+      }
+
+      distance(y_i,x_i) = dist;
+
+    }
+  }
+
+  return distance;
+
+}
+
+```
+
