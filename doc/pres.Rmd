@@ -70,13 +70,11 @@ Les variables peuvent êtres locales ou globales, comme dans R
 
 Il faut déclarer la taille d'une variable (i.e., la mémoire à allouer)
 ```{Rcpp, eval = FALSE}
-
 int num;
 double sq_root;
 
 unsigned int size = 12;  // les modificateurs signed, unsigned, long, short peuvent être appliqués aux integer
 float mean[size];
-
 ```
 
 ***Les modificateurs de type***
@@ -98,7 +96,7 @@ __un exemple avec les integers__
 ### Boucle for()
 
 _for(initialisation; expression; incrément)_
-_}_
+_{_
   _séquence de déclaration_
 _}_
 
@@ -125,10 +123,8 @@ La condition est toujours testée en premier. Si la condition est fausse, le cod
 
 Plusieurs controles peuvent être utilisés dans une boucle.
 ```{Rcpp, eval = FALSE}
-
 for(x=0, y=0; x<=10; ++x, --y)    // la vigure en c++ veut dire fait ça et ça
   cout << x << ' ' << y << '\n';
-
 ```
 
 ### if() statement & void functions
