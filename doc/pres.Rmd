@@ -1,6 +1,6 @@
 ---
 title: "Introduction à C++"
-author: "Victor Cameron & Benjamin Mercier"
+author: "Mostly Victor Cameron & a (very) little Benjamin Mercier"
 date: "18/09/2020"
 output:
   html_document: default
@@ -10,9 +10,172 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+## Une courte histoire de C++
+
+- Langage développé par Bjarne Stroustrup vers 1979.</br>
+- L'idée était principalement d'intégrer le concept de programmation orienté-objet au langage C.</br>
+- Classé 4e langage le plus utilisé globablement par le Tiobe index.</br>
+- C++ est un langage compilé, c'est à dire qu'il doit être compilé par un compilateur avant de pouvoir être exécuté.</br>
+- La compilation est la traduction du code vers un langage que la machine va interpréter et pouvoir exécuter.</br>
+- C++ a obtenu son nom de l'opérateur d'incrément; il représente un _incremental improvment_ par rapport à C.</br>
+
+<font size="1">Source: https://www.cplusplus.com/info/history/</font>
+
+## Un survol de C++
+
+Exemple de script
+```{Rcpp, eval = FALSE}
+/* C++ est un langage compilé */
+// C++ est un langage compilé
+#include <iostream.h>
+
+main(){
+  std::cout << "Ceci est un programme en C++";
+
+  return 0;
+}
+```
+Décorticons les éléments précédents:
+
+/* */ ou // marque un commentaire.
+
+__#include <iostream.h>__ fait appel à la librairie iostream qui permet d'utiliser la commande __cout__
+
+__main()__ c'est où l'exécution du programme commence. Tous les programmes C++ sont composés d'une ou de plusieurs fonctions. Ici, la fonction est nommée __main()__. Tous les programmes en C++ doivent contenir une fonction __main()__ qui indique le début et la fin du code à exécuter.
+
+__std::__ fait appel au namespace utilisé. Peut être remplacé par __using namespace std;__
+
+__cout << "Ceci est un programme en C++";__ est la déclaration de la sortie de la console. L'oppérateur __<<__ cause ce qui est à sa droite à être la sortie de l'identifiant à sa gauche. __cout__ est un identifiant prédéfini qui cause le message à être imprimé à l'écran.
+
+__return 0;__ met fin à __main()__ et retourne la valeur 0 au système d'opération ce qui signifie que le programme se termine normalement. Si d'autres valeurs sont retournées, cela signifie que le programme s'est terminé à cause d'une erreur.
+En C++, _TRUE_ est associé à 0 alors que toute autre valeur est associé à _FALSE_.
+
+Seules les fonctions __main__ et __void__ sont compilables sans "return"!
+
+Toutes les commandes se terminent par un point virgue __;__
+
+### La fonction en C++
+
+__structure__:</br>
+ *type_retour* *nom_fonction*(liste des paramètres)</br>
+_{_</br>
+_corps de la fonction_</br>
+_}_
+
+### Déclaration de variable
+
+__type variable_list;__
+
+Les variables peuvent êtres locales ou globales, comme dans R
+
+Il faut déclarer la taille d'une variable (i.e., la mémoire à allouer)
+```{Rcpp, eval = FALSE}
+
+int num;
+double sq_root;
+
+unsigned int size = 12;  // les modificateurs signed, unsigned, long, short peuvent être appliqués aux integer
+float mean[size];
+
+```
+
+***Les modificateurs de type***
+
+Chaque type demande un certain volume de mémoire
+
+__un exemple avec les integers__
+
+| Type | Bytes | Range |
+| :--- | :---: | ----: |
+| int | 2 | -32 768 à 32 767 |
+| unsigned int | 2 | 0 à 65 535 |
+| signed int | 2 | -32 768 à 32 767 |
+| short int | 2 | même que int |
+| long int | 4 | -2 147 483 648 à 2 147 483 647 |
+| unsigned long int | 4 | 0 à 4 294 967 295|
+
+
+### Boucle for()
+
+_for(initialisation; expression; incrément)_
+_}_
+  _séquence de déclaration_
+_}_
+
+```{Rcpp, eval = FALSE}
+#include <iostream.h>
+#include <math.h>
+
+main(){
+  
+  int num;
+  double sq_root;
+  
+  for(num = 1; num < 100; num ++) {
+    sq_root = sqrt((double) num);
+    cout << num << " " << sq_root << '\n';
+  }
+
+  return 0;
+}
+
+```
+
+La condition est toujours testée en premier. Si la condition est fausse, le code à l'intérieur de la boucle n'est pas évaluée.
+
+Plusieurs controles peuvent être utilisés dans une boucle.
+```{Rcpp, eval = FALSE}
+
+for(x=0, y=0; x<=10; ++x, --y)    // la vigure en c++ veut dire fait ça et ça
+  cout << x << ' ' << y << '\n';
+
+```
+
+### if() statement & void functions
+
+```{Rcpp, eval = FALSE}
+#include <iostream.h>
+using namespace std;
+
+void adding(int& y)
+{
+  cout << "Please choose between the following option:\n1: Add 5? \n2: Add 10?\n"
+  int temp;
+  cin >> temp;
+
+  if(temp == 1)
+    y = y + 5;
+  if(temp == 2)
+    y = y + 10;
+}
+
+main(){
+  int x;
+  std::cout << "Please enter an integer\n";
+  cin >> x;
+
+  adding(x);
+
+  cout << "After your previous choice, x = " << x << endl;
+
+  return 0;
+}
+```
+### Les opérateurs
+
+| Opérateur | Action |
+| :-------- | -----: |
+| -         | soustraction|
+| + | addition |
+| * | multiplication |
+| / | division |
+| % | modulus |
+| -- | décrément |
+| ++ | incrément |
 
 ## Pourquoi C++?
-
+ <font size="5"><p style="text-align: center;"> __La vitesse!__ </p></font>
+ 
 La probabilité $X_i$ qu'une cellule $i$ soit occupée par une population est la somme de la probabilité de colonisation et de la probabilité qu'une population y demeure
 
 $$P(X_{i,t+1} = 1) = c_i + (1 - e_i)$$
@@ -110,154 +273,18 @@ system.time({distanceR(width, height, x_vec, y_vec)})  # Avec R
 system.time({distanceCpp(width, height, x_vec, y_vec)}) # Avec C++
 ```
 
-La rapidité d'implémentation du langage de programmation C++ est de beaucoup suppérieure à celle de R. Cependant, programmer en R est beaucoup plus convivial. Voyons comment.
+La rapidité d'implémentation du langage de programmation C++ est de beaucoup suppérieure à celle de R. 
+Cependant, programmer en R est beaucoup plus convivial. Voyons comment.
 
 ***La clef c'est l'allocation et la gestion de la mémoire!***
+
 R mets beaucoup de temps en allocation de mémoire et crée de nombreux objets temporaires.
 C++ permet une implémentation plus rapide puisqu'il permet d'optimiser via la gestion de la mémoire et des 'patterns' d'accès.
 
-## Une courte histoire de C++
-
-Provient de C
-
-
-## Un survol de C++
-
-Exemple de script
-```{Rcpp, eval = FALSE}
-/* C++ est un langage compilé
-*/
-
-#include <iostream.h>
-
-main(){
-
-  std::cout << "Ceci est un programme en C++";
-
-  return 0;
-}
-```
-
-C++ est un langage compilé. C'est à dire qu'il doit être compilé par un compilateur avant de pouvoir être roulé.
-
-__/*__ __*/__ ou __//__ marque un commentaire.
-
-__#include <iostream.h>__ fait appel à la librairie iostream qui permet d'utiliser la commande __cout__
-
-__main()__ c'est où l'exécution du programme commence. Tous les programmes C++ sont composés d'une ou de plusieurs fonctions. Ici, la fonction est nommée __main()__. Tous les programmes en C++ doivent contenir une fonction __main()__ qui indique le début et la fin du code à exécuter.
-
-__std::__ fait appel au namespace utilisé. Peut être remplacé par __using namespace std;__
-
-__cout << "Ceci est un programme en C++";__ est la déclaration de la sortie de la console. L'oppérateur __<<__ cause ce qui est à sa droite à être la sortie de l'identifiant à sa gauche. __cout__ est un identifiant prédéfini qui cause le message à être imprimé à l'écran.
-
-__return 0;__ met fin à __main()__ et retourne la valeur 0 au système d'opération ce qui signifie que le programme se termine normalement. Si d'autres valeurs sont retournées, cela signifie que le programme s'est terminé à cause d'une erreur.
-En C++, _TRUE_ est associé à 0 alors que toute autre valeur est associé à _FALSE_.
-
-Toutes les commandes se terminent par un point virgue __;__
-
-### La fonction en C++
-
-_type_retour nom_fonction(liste des paramètres)_
-_{_
-_corps de la fonction_
-_}_
-
-```{Rcpp, eval = FALSE}
-// exemple de fonction qui retourne une valeur
-
-```
-
-**Void functions
-
-### Déclaration de variable
-
-_type variable_list;_
-
-Les variables peuvent êtres locales ou globales, comme dans R
-
-Il faut déclarer la taille d'une variable (i.e., la mémoire à allouer)
-```{Rcpp, eval = FALSE}
-
-int num;
-double sq_root;
-
-unsigned int size = 12;  // les modificateurs signed, unsigned, long, short peuvent être appliqués aux integer
-float mean[size];
-
-```
-
-***Les modificateurs de type***
-
-Chaque type demande un certain volume de mémoire
-
-__un exemple avec les integers__
-| Type | Bytes | Range |
-| :--- | :---: | ----: |
-| int | 2 | -32 768 à 32 767 |
-| unsigned int | 2 | 0 à 65 535 |
-| signed int | 2 | -32 768 à 32 767 |
-| short int | 2 | même que int |
-| long int | 4 | -2 147 483 648 à 2 147 483 647 |
-| unsigned long int | 4 | 0 à 4 294 967 295|
-
-
-### Boucle for()
-
-_for(initialisation; expression; incrément)_
-_}_
-  _séquence de déclaration_
-_}_
-
-```{Rcpp, eval = FALSE}
-#include <iostream.h>
-#include <math.h>
-
-main(){
-  
-  int num;
-  double sq_root;
-  
-  for(num = 1; num < 100; num ++) {
-    sq_root = sqrt((double) num);
-    cout << num << " " << sq_root << '\n';
-  }
-
-  return 0;
-}
-
-```
-
-La condition est toujours testée en premier. Si la condition est fausse, le code à l'intérieur de la boucle n'est pas évaluée.
-
-Plusieurs controles peuvent être utilisés dans une boucle.
-```{Rcpp, eval = FALSE}
-
-for(x=0, y=0; x<=10; ++x, --y)    // la vigure en c++ veut dire fait ça et ça
-  cout << x << ' ' << y << '\n';
-
-```
-
-
-### if() statement
-
-### Les opérateurs
-
-| Opérateur | Action |
-| :-------- | -----: |
-| -         | soustraction|
-| + | addition |
-| * | multiplication |
-| / | division |
-| % | modulus |
-| -- | décrément |
-| ++ | incrément |
-
-C++ a obtenu son nom de l'opérateur d'incrément. C++ est bâti à partir du langage C, il représente un _incremental improvment_ par rapport à C
-
 ## Rcpp
 
-___Rcpp___ est un package qui étend R pour y inclure C++.
-Rcpp est un package CRAN et peut être intallé en utilisant 'install.packages('Rcpp')'.
+- ___Rcpp___ est un package qui étend R pour y inclure C++.
+- Rcpp est un package CRAN et peut être intallé en utilisant 'install.packages('Rcpp')'.
 
 On peut vérifier que le package fonctionne normalement
 ```{r c++}
@@ -276,7 +303,7 @@ bool result = (num % 2 == 1);
 }")
 ```
 
-Une fonction C++ peut être codée dans un script C++ en tenant compte de la syntaxe spécifique à _Rcpp_. Le script C++ n'a qu'à être référencé dans le code R, comme on le ferait pour un script R.
+Une fonction C++ peut aussi être codée dans un script C++ en tenant compte de la syntaxe spécifique à _Rcpp_. Le script C++ n'a qu'à être référencé dans le code R, comme on le ferait pour un script R.
 ```{r}
 Rcpp::sourceCpp(file="isOddCpp2.cpp")
 ```
@@ -286,7 +313,6 @@ Rcpp::sourceCpp(file="isOddCpp2.cpp")
 isOddCpp(42)
 isOddCpp2(42)
 ```
-
 
 ### Classes d'objet spécifiques à Rcpp
 
@@ -330,3 +356,4 @@ NumericMatrix distanceCpp(int width, int height, NumericVector x_vec, NumericVec
 
 ```
 
+Amaël? :-)
